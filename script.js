@@ -1,25 +1,40 @@
 console.log("Démarrage");
 
 const username = "mxou";
+const fs = require("fs");
+const path = require("path");
 
 // ---DESTINATIONS---
 const imgDestination = `C:/Users/${username}/Pictures`;
 const docDestination = `C:/Users/${username}/Documents`;
-// ---DESTINATIONS---
-
-const fs = require("fs");
-const path = require("path");
 const downloadPath = `C:/Users/${username}/Downloads`;
 const downloadFile = fs.readdirSync(downloadPath);
 const sourceFile = `C:/Users/${username}`;
 const pepperPath = `C:/Users/${username}/PEPPER`;
+// ---DESTINATIONS---
 
+// ---INITIALISATION DE PEPPER---
 if (!fs.existsSync(pepperPath)) {
   fs.mkdirSync(pepperPath);
   console.log("Dossier PEPPER créé avec succès");
+  let pdfPath = `C:/Users/${username}/PEPPER/PDFs`;
+  if (!fs.existsSync(pdfPath)) {
+    fs.mkdirSync(pdfPath);
+    console.log("Dossier PDFs crée avec succès");
+  } else {
+    console.log("Erreur lors de la création du dossier PDFs");
+  }
+  let binPath = `C:/Users/${username}/PEPPER/Bin`;
+  if (!fs.existsSync(binPath)) {
+    fs.mkdirSync(binPath);
+    console.log("Dossier Bin crée avec succès");
+  } else {
+    console.log("Erreur lors de la création du dossier Bin");
+  }
 } else {
   console.log("Dossier PEPPER déja existant");
 }
+// ---INITIALISATION DE PEPPER---
 
 function isFileAllowed(stats, limitDays) {
   const now = Date.now();
@@ -42,7 +57,7 @@ downloadFile.forEach((file) => {
     return;
   }
 
-  console.log("OK : ", file);
+  //   console.log("OK : ", file);
 
   let ext = path.extname(file);
   if (ext === ".txt") {
