@@ -17,23 +17,21 @@ const pepperPath = `C:/Users/${username}/PEPPER`;
 if (!fs.existsSync(pepperPath)) {
   fs.mkdirSync(pepperPath);
   console.log("Dossier PEPPER créé avec succès");
-  let pdfPath = `C:/Users/${username}/PEPPER/PDFs`;
-  if (!fs.existsSync(pdfPath)) {
-    fs.mkdirSync(pdfPath);
-    console.log("Dossier PDFs crée avec succès");
-  } else {
-    console.log("Erreur lors de la création du dossier PDFs");
-  }
-  let binPath = `C:/Users/${username}/PEPPER/Bin`;
-  if (!fs.existsSync(binPath)) {
-    fs.mkdirSync(binPath);
-    console.log("Dossier Bin crée avec succès");
-  } else {
-    console.log("Erreur lors de la création du dossier Bin");
-  }
 } else {
-  console.log("Dossier PEPPER déja existant");
+  console.log("Dossier PEPPER déjà existant");
 }
+
+// Liste des sous-dossiers
+const subFolders = ["PDFs", "Bin", "HTML", "TXT", "Quarantine"];
+
+subFolders.forEach((folder) => {
+  let fullPath = `C:/Users/${username}/PEPPER/${folder}`;
+
+  if (!fs.existsSync(fullPath)) {
+    fs.mkdirSync(fullPath);
+    console.log(`Dossier ${folder} créé avec succès`);
+  }
+});
 // ---INITIALISATION DE PEPPER---
 
 function isFileAllowed(stats, limitDays) {
