@@ -3,6 +3,7 @@ console.log("Démarrage");
 const username = "mxou";
 const fs = require("fs");
 const path = require("path");
+const duplicateRegex = /\(\d+\)/;
 
 // ---DESTINATIONS---
 const imgDestination = `C:/Users/${username}/Pictures`;
@@ -74,10 +75,22 @@ function addLog(task) {
 }
 
 // ---ANALYSE DU DOSSIER TELECHARGEMENTS---
+let duplicateCount = 0;
 downloadFile.forEach((file) => {
-  let start = performance.now();
   let fullPath = path.join(downloadPath, file);
   let stats = fs.statSync(fullPath);
+
+  // Envoi des doublons dans le dossier Bin
+  if (duplicateRegex.test(file)) {
+    let newPath = path.join(binPepperPath, file);
+
+    fs.renameSync(fullPath, newPath);
+
+    duplicateCount += 1;
+    console.log(`Doublon déplacé : ${file}`);
+    console.log(`Total doublons déplacés : ${duplicateCount}`);
+    addLog(`${file} [DOUBLON] déplacé dans le dossier ${binPepperPath} \n`);
+  }
 
   if (!isFileAllowed(stats, 30)) {
     return;
@@ -119,9 +132,6 @@ downloadFile.forEach((file) => {
     fs.renameSync(fullPath, newPath);
     console.log(`Fichier : ${file} déplacé avec succès dans le dossier ${newPath}`);
     addLog(`Fichier : ${file} déplacé avec succès dans le dossier ${newPath}`);
-    let end = performance.now();
-    console.log(`Protocole réalisé en ${start - end}ms`);
-    addLog(`Protocole réalisé en ${start - end}ms`);
   }
 });
 // ---ANALYSE DU DOSSIER TELECHARGEMENTS---
