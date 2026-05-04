@@ -71,7 +71,7 @@ function isFileAllowed(stats, limitDays) {
 }
 
 function addLog(task) {
-  fs.appendFileSync(logsPath, `${getDateTime()} ${task}`);
+  fs.appendFileSync(logsPath, `${getDateTime()} ${task} \n`);
 }
 
 // ---ANALYSE DU DOSSIER TELECHARGEMENTS---
@@ -92,7 +92,7 @@ downloadFile.forEach((file) => {
     addLog(`${file} [DOUBLON] déplacé dans le dossier ${binPepperPath} \n`);
   }
 
-  if (!isFileAllowed(stats, 30)) {
+  if (!isFileAllowed(stats, 1200)) {
     return;
   }
 
@@ -114,6 +114,11 @@ downloadFile.forEach((file) => {
     addLog(`Fichier : ${file} déplacé avec succès dans le dossier ${newPath}`);
   } else if (ext === ".mp3" || ext === ".mp4" || ext === ".avi" || ext === ".webm") {
     let newPath = path.join(videoDestination, file);
+    fs.renameSync(fullPath, newPath);
+    console.log(`Fichier : ${file} déplacé avec succès dans le dossier ${newPath}`);
+    addLog(`Fichier : ${file} déplacé avec succès dans le dossier ${newPath}`);
+  } else if (ext === ".zip" || ext === ".rar") {
+    let newPath = path.join(reviewPepperPath, file);
     fs.renameSync(fullPath, newPath);
     console.log(`Fichier : ${file} déplacé avec succès dans le dossier ${newPath}`);
     addLog(`Fichier : ${file} déplacé avec succès dans le dossier ${newPath}`);
