@@ -7,10 +7,17 @@ const path = require("path");
 // ---DESTINATIONS---
 const imgDestination = `C:/Users/${username}/Pictures`;
 const docDestination = `C:/Users/${username}/Documents`;
+const videoDestination = `C:/Users/${username}/Videos`;
 const downloadPath = `C:/Users/${username}/Downloads`;
 const downloadFile = fs.readdirSync(downloadPath);
 const sourceFile = `C:/Users/${username}`;
 const pepperPath = `C:/Users/${username}/PEPPER`;
+const pdfPepperPath = `C:/Users/${username}/PEPPER/PDFs`;
+const binPepperPath = `C:/Users/${username}/PEPPER/Bin`;
+const htmlPepperPath = `C:/Users/${username}/PEPPER/HTML`;
+const txtPepperPath = `C:/Users/${username}/PEPPER/TXT`;
+const reviewPepperPath = `C:/Users/${username}/PEPPER/Review`;
+const codePepperPath = `C:/Users/${username}/PEPPER/Code`;
 // ---DESTINATIONS---
 
 // ---INITIALISATION DE PEPPER---
@@ -22,7 +29,7 @@ if (!fs.existsSync(pepperPath)) {
 }
 
 // Liste des sous-dossiers
-const subFolders = ["PDFs", "Bin", "HTML", "TXT", "Quarantine"];
+const subFolders = ["PDFs", "Bin", "HTML", "TXT", "Review", "Code"];
 
 subFolders.forEach((folder) => {
   let fullPath = `C:/Users/${username}/PEPPER/${folder}`;
@@ -39,31 +46,52 @@ function isFileAllowed(stats, limitDays) {
   const creationDate = stats.birthtimeMs;
   const limit = limitDays * 24 * 60 * 60 * 1000; // x jours de limite
 
-  //   if (now - creationDate > limite) {
-  //     console.log("Fichier trop ancien donc ignoré");
-  //   }
-
   return now - creationDate <= limit;
 }
 
+// ---ANALYSE DU DOSSIER TELECHARGEMENTS---
 downloadFile.forEach((file) => {
   let fullPath = path.join(downloadPath, file);
   let stats = fs.statSync(fullPath);
 
   if (!isFileAllowed(stats, 30)) {
-    // console.log("Ignoré : ", file);
     return;
   }
 
-  //   console.log("OK : ", file);
-
-  let ext = path.extname(file);
+  let ext = path.extname(file).toLowerCase();
   if (ext === ".txt") {
-    let newPath = path.join(docDestination, file);
+    let newPath = path.join(txtPepperPath, file);
     fs.renameSync(fullPath, newPath);
-    // console.log(file, ext);
+    console.log(`Fichier : ${file} déplacé avec succès dans le dossier ${newPath}`);
+  } else if (ext === ".jpg" || ext === ".jpeg" || ext === ".webp" || ext === ".png" || ext === ".svg") {
+    let newPath = path.join(imgDestination, file);
+    fs.renameSync(fullPath, newPath);
+    console.log(`Fichier : ${file} déplacé avec succès dans le dossier ${newPath}`);
+  } else if (ext === ".pdf") {
+    let newPath = path.join(pdfPepperPath, file);
+    fs.renameSync(fullPath, newPath);
+    console.log(`Fichier : ${file} déplacé avec succès dans le dossier ${newPath}`);
+  } else if (ext === ".mp3" || ext === ".mp4" || ext === ".avi" || ext === ".webm") {
+    let newPath = path.join(videoDestination, file);
+    fs.renameSync(fullPath, newPath);
+    console.log(`Fichier : ${file} déplacé avec succès dans le dossier ${newPath}`);
+  } else if (
+    ext === ".css" ||
+    ext === ".sql" ||
+    ext === ".js" ||
+    ext === ".html" ||
+    ext === ".php" ||
+    ext === ".md" ||
+    ext === ".json" ||
+    ext === ".xml" ||
+    ext === ".py"
+  ) {
+    let newPath = path.join(codePepperPath, file);
+    fs.renameSync(fullPath, newPath);
+    console.log(`Fichier : ${file} déplacé avec succès dans le dossier ${newPath}`);
   }
 });
+// ---ANALYSE DU DOSSIER TELECHARGEMENTS---
 
 // const buddyContent = fs.readFile(buddy);
 
