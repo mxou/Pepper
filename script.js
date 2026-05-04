@@ -18,7 +18,22 @@ const htmlPepperPath = `C:/Users/${username}/PEPPER/HTML`;
 const txtPepperPath = `C:/Users/${username}/PEPPER/TXT`;
 const reviewPepperPath = `C:/Users/${username}/PEPPER/Review`;
 const codePepperPath = `C:/Users/${username}/PEPPER/Code`;
+const logsPath = `C:/Users/${username}/PEPPER/logs.txt`;
 // ---DESTINATIONS---
+
+function getDateTime() {
+  const now = new Date();
+
+  const day = String(now.getDate()).padStart(2, "0");
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const year = now.getFullYear();
+
+  const hours = String(now.getHours()).padStart(2, "0");
+  const minutes = String(now.getMinutes()).padStart(2, "0");
+  const seconds = String(now.getSeconds()).padStart(2, "0");
+
+  return `[${day}/${month}/${year} ${hours}:${minutes}:${seconds}]`;
+}
 
 // ---INITIALISATION DE PEPPER---
 if (!fs.existsSync(pepperPath)) {
@@ -26,6 +41,11 @@ if (!fs.existsSync(pepperPath)) {
   console.log("Dossier PEPPER créé avec succès");
 } else {
   console.log("Dossier PEPPER déjà existant");
+}
+
+if (!fs.existsSync(logsPath)) {
+  fs.writeFileSync(logsPath, `${getDateTime()} Programme PEPPER initialisé\n`);
+  console.log("Fichier logs crée avec succès");
 }
 
 // Liste des sous-dossiers
@@ -49,8 +69,13 @@ function isFileAllowed(stats, limitDays) {
   return now - creationDate <= limit;
 }
 
+function addLog(task) {
+  fs.appendFileSync(logsPath, `${getDateTime()} ${task}`);
+}
+
 // ---ANALYSE DU DOSSIER TELECHARGEMENTS---
 downloadFile.forEach((file) => {
+  let start = performance.now();
   let fullPath = path.join(downloadPath, file);
   let stats = fs.statSync(fullPath);
 
@@ -63,18 +88,22 @@ downloadFile.forEach((file) => {
     let newPath = path.join(txtPepperPath, file);
     fs.renameSync(fullPath, newPath);
     console.log(`Fichier : ${file} déplacé avec succès dans le dossier ${newPath}`);
+    addLog(`Fichier : ${file} déplacé avec succès dans le dossier ${newPath}`);
   } else if (ext === ".jpg" || ext === ".jpeg" || ext === ".webp" || ext === ".png" || ext === ".svg") {
     let newPath = path.join(imgDestination, file);
     fs.renameSync(fullPath, newPath);
     console.log(`Fichier : ${file} déplacé avec succès dans le dossier ${newPath}`);
+    addLog(`Fichier : ${file} déplacé avec succès dans le dossier ${newPath}`);
   } else if (ext === ".pdf") {
     let newPath = path.join(pdfPepperPath, file);
     fs.renameSync(fullPath, newPath);
     console.log(`Fichier : ${file} déplacé avec succès dans le dossier ${newPath}`);
+    addLog(`Fichier : ${file} déplacé avec succès dans le dossier ${newPath}`);
   } else if (ext === ".mp3" || ext === ".mp4" || ext === ".avi" || ext === ".webm") {
     let newPath = path.join(videoDestination, file);
     fs.renameSync(fullPath, newPath);
     console.log(`Fichier : ${file} déplacé avec succès dans le dossier ${newPath}`);
+    addLog(`Fichier : ${file} déplacé avec succès dans le dossier ${newPath}`);
   } else if (
     ext === ".css" ||
     ext === ".sql" ||
@@ -89,6 +118,10 @@ downloadFile.forEach((file) => {
     let newPath = path.join(codePepperPath, file);
     fs.renameSync(fullPath, newPath);
     console.log(`Fichier : ${file} déplacé avec succès dans le dossier ${newPath}`);
+    addLog(`Fichier : ${file} déplacé avec succès dans le dossier ${newPath}`);
+    let end = performance.now();
+    console.log(`Protocole réalisé en ${start - end}ms`);
+    addLog(`Protocole réalisé en ${start - end}ms`);
   }
 });
 // ---ANALYSE DU DOSSIER TELECHARGEMENTS---
