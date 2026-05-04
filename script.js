@@ -2,6 +2,25 @@ console.log("Démarrage");
 
 const username = "mxou";
 
+// ---DESTINATIONS---
+const imgDestination = `C:/Users/${username}/Pictures`;
+const docDestination = `C:/Users/${username}/Documents`;
+// ---DESTINATIONS---
+
+const fs = require("fs");
+const path = require("path");
+const downloadPath = `C:/Users/${username}/Downloads`;
+const downloadFile = fs.readdirSync(downloadPath);
+const sourceFile = `C:/Users/${username}`;
+const pepperPath = `C:/Users/${username}/PEPPER`;
+
+if (!fs.existsSync(pepperPath)) {
+  fs.mkdirSync(pepperPath);
+  console.log("Dossier PEPPER créé avec succès");
+} else {
+  console.log("Dossier PEPPER déja existant");
+}
+
 function isFileAllowed(stats, limitDays) {
   const now = Date.now();
   const creationDate = stats.birthtimeMs;
@@ -13,16 +32,6 @@ function isFileAllowed(stats, limitDays) {
 
   return now - creationDate <= limit;
 }
-
-// ---DESTINATIONS---
-const imgDestination = `C:/Users/${username}/Pictures`;
-const docDestination = `C:/Users/${username}/Documents`;
-// ---DESTINATIONS---
-
-const fs = require("fs");
-const path = require("path");
-const downloadPath = `C:/Users/${username}/Downloads`;
-const downloadFile = fs.readdirSync(downloadPath);
 
 downloadFile.forEach((file) => {
   let fullPath = path.join(downloadPath, file);
