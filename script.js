@@ -15,9 +15,8 @@ function isFileAllowed(stats, limitDays) {
 }
 
 // ---DESTINATIONS---
-const pngDestination = `C:/Users/${username}/Pictures/pngs`;
-const jpgDestination = `C:/Users/${username}/Pictures/jpgs`;
-const webpDestination = `C:/Users/${username}/Pictures/webps`;
+const imgDestination = `C:/Users/${username}/Pictures`;
+const docDestination = `C:/Users/${username}/Documents`;
 // ---DESTINATIONS---
 
 const fs = require("fs");
@@ -30,11 +29,16 @@ downloadFile.forEach((file) => {
   let stats = fs.statSync(fullPath);
 
   if (!isFileAllowed(stats, 30)) {
-    console.log("Ignoré : ", file);
+    // console.log("Ignoré : ", file);
     return;
   }
 
   console.log("OK : ", file);
+
+  let ext = path.extname(file);
+  if (ext === ".txt") {
+    console.log(file, ext);
+  }
 });
 
 // const buddyContent = fs.readFile(buddy);
