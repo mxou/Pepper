@@ -37,7 +37,9 @@ downloadFile.forEach((file) => {
 
   let ext = path.extname(file);
   if (ext === ".txt") {
-    console.log(file, ext);
+    let newPath = path.join(docDestination, file);
+    fs.renameSync(fullPath, newPath);
+    // console.log(file, ext);
   }
 });
 
